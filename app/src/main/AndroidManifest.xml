@@ -25,7 +25,7 @@
 
 
         <provider
-            android:name="com.paipeng.cplocation.CPLocationProvider"
+            android:name="com.paipeng.cplocation.provider.CPLocationProvider"
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

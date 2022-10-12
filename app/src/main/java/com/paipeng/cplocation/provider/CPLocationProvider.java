@@ -1,4 +1,4 @@
-package com.paipeng.cplocation;
+package com.paipeng.cplocation.provider;
 
 import androidx.core.content.FileProvider;
 

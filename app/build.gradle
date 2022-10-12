@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
     id 'com.google.firebase.crashlytics'
 }
 
@@ -16,6 +15,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionName CPLOCATION_MODULE_VERSION
+        versionCode 1
 
         packagingOptions {
             exclude 'META-INF/proguard/androidx-annotations.pro'
@@ -37,14 +37,11 @@ android {
             setProperty("archivesBaseName", "CPLocation_v" + defaultConfig.versionName)
             buildConfigField "String", "CPLOCATION_MODULE_VERSION", "\""+CPLOCATION_MODULE_VERSION+"\""
             minifyEnabled true
-            // Resource shrinker cannot be used for libraries.
-            //shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             buildConfigField "String", "CPLOCATION_MODULE_VERSION", "\""+CPLOCATION_MODULE_VERSION+"\""
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.Release
             jniDebuggable true
             minifyEnabled false
         }
@@ -69,6 +66,7 @@ android {
 repositories {
     maven { url "https://jitpack.io" }
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
+    flatDir { dirs 'libs', 'jniLibs' }
 }
 
 task copyResDirectoryToClasses(type: Copy){
@@ -77,8 +75,10 @@ task copyResDirectoryToClasses(type: Copy){
 }
 
 dependencies {
-    implementation("org.greenrobot:eventbus:3.3.1")
-    annotationProcessor 'org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0'
+    // https://mvnrepository.com/artifact/com.amap.api/location
+    implementation group: 'com.amap.api', name: 'location', version: '6.1.0'
+
+    implementation(name: 'BaiduLBS_AndroidSDK_Lib_GP', ext: 'aar')
 
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-crashlytics'
