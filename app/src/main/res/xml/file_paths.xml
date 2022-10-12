@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="external_storage_updatedemo"
+        path="updatedemo" />
+    <external-files-path name="feedback_photo" path="Pictures" />
+</paths>

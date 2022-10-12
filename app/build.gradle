@@ -1,0 +1,90 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.google.firebase.crashlytics'
+}
+
+android {
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError false
+    }
+
+    compileSdkVersion 31
+    buildToolsVersion '29.0.3'
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionName CPLOCATION_MODULE_VERSION
+
+        packagingOptions {
+            exclude 'META-INF/proguard/androidx-annotations.pro'
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        test {
+            resources.srcDirs += ['src/test/resources']
+        }
+        androidTest {
+            resources.srcDirs += ['src/androidTest/resources']
+        }
+    }
+
+    buildTypes {
+        release {
+            setProperty("archivesBaseName", "CPLocation_v" + defaultConfig.versionName)
+            buildConfigField "String", "CPLOCATION_MODULE_VERSION", "\""+CPLOCATION_MODULE_VERSION+"\""
+            minifyEnabled true
+            // Resource shrinker cannot be used for libraries.
+            //shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField "String", "CPLOCATION_MODULE_VERSION", "\""+CPLOCATION_MODULE_VERSION+"\""
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.Release
+            jniDebuggable true
+            minifyEnabled false
+        }
+    }
+    gradle.startParameter.getTaskNames().each { task ->
+        if (task.contains("Debug")) {
+            android {
+                defaultPublishConfig "debug"
+            }
+
+        } else if (task.contains("Release")) {
+            android {
+                defaultPublishConfig "release"
+            }
+        }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/'}
+}
+
+task copyResDirectoryToClasses(type: Copy){
+    from "${projectDir}/src/test/res"
+    into "${buildDir}/intermediates/classes/test/debug/res"
+}
+
+dependencies {
+    implementation("org.greenrobot:eventbus:3.3.1")
+    annotationProcessor 'org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0'
+
+    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
